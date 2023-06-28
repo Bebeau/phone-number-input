@@ -25,7 +25,7 @@ const [phone, setPhone] = useState('');
 >
 ```
 
-## Demo ##
+## Example ##
 ```
 import react, {useState, useEffect} from 'react';
 import PhoneNumberInput from '@bebeau/phone-number-input';

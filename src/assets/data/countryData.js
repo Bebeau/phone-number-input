@@ -1,4 +1,4 @@
-let countryData = [
+const data = [
 	{
 		"name": "Afghanistan",
 		"dial_code": "+93",
@@ -1220,3 +1220,5 @@ let countryData = [
 		"code": "ZW"
 	}
 ]
+
+export default data;

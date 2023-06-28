@@ -1,0 +1,26 @@
+{
+  "extends": "@tsconfig/create-react-app/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "allowJs": true,
+    "jsx": "react",
+    "strict": true,
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "outDir": "./lib",
+    "noEmit": false,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+  },
+  "include": [
+    "src",
+    "src/custom.d.ts",
+  ],
+  "exclude": [
+    "src/index.tsx",
+    "src/App.test.tsx",
+    "src/react-app-env.d.ts",
+    "src/reportWebVitals.ts",
+    "src/setupTests.ts",
+  ]
+}

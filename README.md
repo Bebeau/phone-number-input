@@ -52,7 +52,7 @@ export default Demo;
 
 Prop | Type | Description
 |---|---|---|
-onInputChange | (value: string) => VOID | onInputChange is a function that passes the value up to the parent component. It is used to set the value of the phone number input.
+onInputChange | function | onInputChange is a function that accepts the input value and passes it up to the parent component.
 
 ## Styling ##
 

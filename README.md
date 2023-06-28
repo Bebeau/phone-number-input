@@ -14,16 +14,18 @@ npm install @bebeau/phone-number-input
 ```
 import PhoneNumberInput from '@bebeau/phone-number-input';
 ```
-3. Set useState for phone number input value
-```
-const [phone, setPhone] = useState('');
-```
-4. Use the component
+3. Use the component
 ```
 <PhoneNumberInput
   onInputChange={(value) => setPhone(value)}
 >
 ```
+
+## Props ##
+
+Prop | Type | Description
+|---|---|---|
+onInputChange | function | onInputChange is a function that accepts the input value and passes it up to the parent component.
 
 ## Example ##
 ```
@@ -47,12 +49,6 @@ const Demo = () => {
 
 export default Demo;
 ```
-
-## Props ##
-
-Prop | Type | Description
-|---|---|---|
-onInputChange | function | onInputChange is a function that accepts the input value and passes it up to the parent component.
 
 ## Styling ##
 

@@ -1,0 +1,24 @@
+{
+  "name": "@bebeau/phone-number-input",
+  "description": "A phone number input that formats and validates as you type.",
+  "keywords": [
+    "phone number input",
+    "format phone number",
+    "phone number validation",
+    "international phone number input",
+    "formatted phone number input"
+  ],
+  "version": "1.0.3",
+  "author": "kylebebeau@gmail.com",
+  "license": "ISC",
+  "main": "lib/PhoneNumberInput.js",
+  "repository": "https://github.com/Bebeau/phone-number-input.git",
+  "private": false,
+  "dependencies": {
+    "libphonenumber-js": "^1.10.36",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "packageManager": "yarn@1.22.19"
+}

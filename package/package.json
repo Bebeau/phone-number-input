@@ -8,7 +8,7 @@
     "international phone number input",
     "formatted phone number input"
   ],
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "kylebebeau@gmail.com",
   "license": "ISC",
   "main": "lib/PhoneNumberInput.js",

@@ -28,14 +28,17 @@
   z-index: 9999;
   max-height: 400px;
   width: 100%;
+  box-sizing: border-box;
   top: 100%;
-  left: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
   background: white;
   overflow-y: scroll;
   overflow-x: hidden;
   display: none;
   white-space: nowrap;
-  border: 1px solid #c2c7cb;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 5px 5px;
 }
 .phone-number-input .dd-menu.in {
   display: block;
@@ -46,11 +49,11 @@
 .phone-number-input .dd-menu .dd-wrap .dd-search {
   box-sizing: border-box;
   position: sticky;
-  top: -1px;
+  top: 0;
   left: 0;
   right: 0;
   background: white;
-  padding: 10px;
+  padding: 5px;
 }
 .phone-number-input .dd-menu .dd-wrap .dd-search section {
   position: relative;
@@ -58,11 +61,14 @@
 .phone-number-input .dd-menu .dd-wrap .dd-search input[name=flagSearch] {
   width: 100%;
   box-sizing: border-box;
+  margin: 0;
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 5px;
 }
 .phone-number-input .dd-menu .dd-wrap .dd-search input[name=flagSearch]:active, .phone-number-input .dd-menu .dd-wrap .dd-search input[name=flagSearch]:focus {
-  border-color: #a6aeb4;
-  box-shadow: none !important;
-  outline: none !important;
+  box-shadow: none;
+  outline: none;
 }
 .phone-number-input .dd-menu .dd-wrap .dd-results {
   box-sizing: border-box;
@@ -81,12 +87,13 @@
   cursor: pointer;
 }
 .phone-number-input .dd-menu .dd-wrap .dd-results article img {
-  width: 50px;
+  width: 30px;
   height: auto;
 }
 .phone-number-input .dd-menu .dd-wrap .dd-results article .countryName {
   font-size: 1rem;
   font-family: sans-serif;
+  color: black;
 }
 .phone-number-input .dd-menu .dd-wrap .countryName {
   padding-left: 10px;
@@ -100,10 +107,15 @@
 .phone-number-input .input-wrap button {
   border-radius: 5px 0 0 5px;
   border-right: none;
+  width: auto;
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .phone-number-input .input-wrap button:focus, .phone-number-input .input-wrap button:active {
-  box-shadow: none !important;
-  outline: none !important;
+  box-shadow: none;
+  outline: none;
 }
 .phone-number-input .input-wrap button img {
   height: auto;
@@ -114,12 +126,12 @@
   width: 100%;
   box-sizing: border-box;
   border-radius: 0 5px 5px 0;
+  margin: 0;
+  padding-left: 5px;
 }
-
-@media (min-width: 768px) {
-  .phone-number-input button img {
-    max-height: 50%;
-  }
+.phone-number-input .input-wrap input:active, .phone-number-input .input-wrap input:focus {
+  box-shadow: none;
+  outline: none;
 }
 
 /*# sourceMappingURL=phone-number-input.css.map */

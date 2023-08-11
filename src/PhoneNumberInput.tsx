@@ -9,11 +9,12 @@ import './assets/css/phone-number-input.css';
 
 import
 {
+  parsePhoneNumber,
   parseIncompletePhoneNumber,
   isPossiblePhoneNumber,
   validatePhoneNumberLength,
   CountryCode,
-  AsYouType,
+  AsYouType
 } from 'libphonenumber-js';
 
 interface countryData {
@@ -24,11 +25,13 @@ interface countryData {
 
 const PhoneNumberInput = (props: {
   onInputChange: (value: string) => void,
+  value?: string,
+  placeholder?: string,
 }) => {
   const dropdownRef = useRef<any>();
 
   const [countryData, setCountryData] = useState<countryData[]>(data);
-  const [countryAbbr, setCountryAbbr] = useState<string>('');
+  const [countryAbbr, setCountryAbbr] = useState<string | undefined>();
   const [dialCode, setDialCode] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [searchVal, setSearchVal] = useState<string>('');
@@ -37,11 +40,11 @@ const PhoneNumberInput = (props: {
 
   const handleClickOutside = (event: any) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false);  
+      setShowDropdown(false);
     }
   }
 
-  const toggleDropdown = () => {
+  const handleBtnClick = () => {
     setShowDropdown(!showDropdown);
   }
 
@@ -62,36 +65,50 @@ const PhoneNumberInput = (props: {
 
   const onPhoneChange = (event: any) => {
     if (validatePhoneNumberLength(event.target.value, countryAbbr as CountryCode) === 'TOO_LONG') {
-      return setPhoneNumber(phoneNumber);
+      return;
     }
-    const number = new AsYouType(countryAbbr as CountryCode).input(event.target.value);
+
+    let number = new AsYouType(countryAbbr as CountryCode).input(event.target.value);
+    if (validatePhoneNumberLength(event.target.value, countryAbbr as CountryCode) === 'TOO_SHORT') {
+      number = event.target.value;
+    }
+
+    if (isPossiblePhoneNumber(number, countryAbbr as CountryCode)) {
+      props.onInputChange(parsePhoneNumber(number, countryAbbr as CountryCode).number);
+    }
+
+    if (!isPossiblePhoneNumber(number, countryAbbr as CountryCode)) {
+      props.onInputChange(number);
+    }
+
     setPhoneNumber(number);
 	}
 
   useEffect(() => {
     setCountryAbbr(navigator.language ? navigator.language.replace("en-","").toUpperCase() : 'US');
-
+    if (props.value) {
+      let phone = parsePhoneNumber(props.value);
+      setCountryAbbr(phone.country ? phone.country : navigator.language ? navigator.language.replace("en-","").toUpperCase() : 'US');
+      setPhoneNumber(phone.formatNational());
+    }
     window.addEventListener('mousedown', (e) => handleClickOutside(e));
     return () => {
       window.removeEventListener('mousedown', handleClickOutside);
     };
-
   }, []);
 
   useEffect(() => {
-    if (countryAbbr !== '') {
+    if (countryAbbr) {
       let match = countryData.filter(country => country.code.includes(countryAbbr))[0];
-      setDialCode(match.dial_code);
+      if(match) {
+        setDialCode(match.dial_code);
+      }
     }
-  }, [countryAbbr, countryData]);
-
-  useEffect(() => {
-    props.onInputChange(phoneNumber);
     if (isPossiblePhoneNumber(phoneNumber, countryAbbr as CountryCode)) {
       return setIsPossibleNumber(true);
     }
     setIsPossibleNumber(false);
-  }, [phoneNumber, countryAbbr]);
+  }, [countryData, phoneNumber, countryAbbr]);
 
   return (
     <div className="phone-number-input">
@@ -116,7 +133,7 @@ const PhoneNumberInput = (props: {
               <article 
                 key={index}
                 onClick={() => onCountryChange(country)}
-              >
+                >
                 <img 
                   src={'https://flagcdn.com/'+country.code.toString().toLowerCase()+'.svg'}
                   alt={country.name} 
@@ -138,18 +155,17 @@ const PhoneNumberInput = (props: {
           <NoIcon className="no icon"/>
         )}
 
-        <button 
-          className="btn btn-default btn-lg btn-dropdown" 
+        <button
           type="button"
-          onClick={toggleDropdown}>
+          onClick={() => handleBtnClick()}>
           {dialCode}
         </button>
 
         <input
-          placeholder="Phone Number" 
           type="tel"
           value={phoneNumber}
           onChange={onPhoneChange}
+          placeholder={props.placeholder ? props.placeholder : 'phone number'}
         />
       </div>
 

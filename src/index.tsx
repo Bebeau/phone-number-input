@@ -7,13 +7,15 @@ const root = ReactDOM.createRoot(
 );
 
 const handleInputChange = (value: string) => {
-  console.log('VALUE: ', value);
+  console.log('PHONE INPUT VALUE: ', value);
 }
 
 root.render(
   <React.StrictMode>
     <PhoneNumberInput 
-      onInputChange={(value: string) => handleInputChange(value)}
+      onInputChange={(info) => handleInputChange(info)}
+      value='+18039993049'
+      placeholder='Testing'
     />
   </React.StrictMode>
 );

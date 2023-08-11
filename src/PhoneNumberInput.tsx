@@ -157,6 +157,7 @@ const PhoneNumberInput = (props: {
 
         <button
           type="button"
+          tabIndex={-1}
           onClick={() => handleBtnClick()}>
           {dialCode}
         </button>

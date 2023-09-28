@@ -4,11 +4,11 @@ import { ReactComponent as YesIcon } from './assets/img/yes.svg';
 import { ReactComponent as NoIcon } from './assets/img/no.svg';
 import { ReactComponent as SearchIcon } from './assets/img/search.svg';
 import './assets/css/phone-number-input.css';
-import { parseIncompletePhoneNumber, isPossiblePhoneNumber, validatePhoneNumberLength, AsYouType, } from 'libphonenumber-js';
+import { parsePhoneNumber, parseIncompletePhoneNumber, isPossiblePhoneNumber, validatePhoneNumberLength, AsYouType } from 'libphonenumber-js';
 const PhoneNumberInput = (props) => {
     const dropdownRef = useRef();
     const [countryData, setCountryData] = useState(data);
-    const [countryAbbr, setCountryAbbr] = useState('');
+    const [countryAbbr, setCountryAbbr] = useState();
     const [dialCode, setDialCode] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [searchVal, setSearchVal] = useState('');
@@ -19,7 +19,7 @@ const PhoneNumberInput = (props) => {
             setShowDropdown(false);
         }
     };
-    const toggleDropdown = () => {
+    const handleBtnClick = () => {
         setShowDropdown(!showDropdown);
     };
     const searchCountries = (event) => {
@@ -35,9 +35,18 @@ const PhoneNumberInput = (props) => {
     };
     const onPhoneChange = (event) => {
         if (validatePhoneNumberLength(event.target.value, countryAbbr) === 'TOO_LONG') {
-            return setPhoneNumber(phoneNumber);
+            return;
         }
-        const number = new AsYouType(countryAbbr).input(event.target.value);
+        let number = new AsYouType(countryAbbr).input(event.target.value);
+        if (validatePhoneNumberLength(event.target.value, countryAbbr) === 'TOO_SHORT') {
+            number = event.target.value;
+        }
+        if (isPossiblePhoneNumber(number, countryAbbr)) {
+            props.onInputChange(parsePhoneNumber(number, countryAbbr).number);
+        }
+        if (!isPossiblePhoneNumber(number, countryAbbr)) {
+            props.onInputChange(number);
+        }
         setPhoneNumber(number);
     };
     useEffect(() => {
@@ -48,18 +57,24 @@ const PhoneNumberInput = (props) => {
         };
     }, []);
     useEffect(() => {
-        if (countryAbbr !== '') {
-            let match = countryData.filter(country => country.code.includes(countryAbbr))[0];
-            setDialCode(match.dial_code);
+        if (props.value) {
+            let phone = parsePhoneNumber(props.value);
+            setCountryAbbr(phone.country ? phone.country : navigator.language ? navigator.language.replace("en-", "").toUpperCase() : 'US');
+            setPhoneNumber(phone.formatNational());
         }
-    }, [countryAbbr, countryData]);
+    }, [props.value]);
     useEffect(() => {
-        props.onInputChange(phoneNumber);
+        if (countryAbbr) {
+            let match = countryData.filter(country => country.code.includes(countryAbbr))[0];
+            if (match) {
+                setDialCode(match.dial_code);
+            }
+        }
         if (isPossiblePhoneNumber(phoneNumber, countryAbbr)) {
             return setIsPossibleNumber(true);
         }
         setIsPossibleNumber(false);
-    }, [phoneNumber, countryAbbr]);
+    }, [countryData, phoneNumber, countryAbbr]);
     return (React.createElement("div", { className: "phone-number-input" },
         React.createElement("div", { className: showDropdown ? 'in dd-menu' : 'dd-menu', ref: dropdownRef },
             React.createElement("div", { className: "dd-wrap" },
@@ -73,7 +88,7 @@ const PhoneNumberInput = (props) => {
         React.createElement("div", { className: "input-wrap" },
             phoneNumber && isPossibleNumber && (React.createElement(YesIcon, { className: "yes icon" })),
             phoneNumber && !isPossibleNumber && (React.createElement(NoIcon, { className: "no icon" })),
-            React.createElement("button", { className: "btn btn-default btn-lg btn-dropdown", type: "button", onClick: toggleDropdown }, dialCode),
-            React.createElement("input", { placeholder: "Phone Number", type: "tel", value: phoneNumber, onChange: onPhoneChange }))));
+            React.createElement("button", { type: "button", tabIndex: -1, onClick: () => handleBtnClick() }, dialCode),
+            React.createElement("input", { type: "tel", value: phoneNumber, onChange: onPhoneChange, placeholder: props.placeholder ? props.placeholder : 'phone number' }))));
 };
 export default PhoneNumberInput;

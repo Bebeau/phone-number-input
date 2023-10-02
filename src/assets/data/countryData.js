@@ -34,11 +34,11 @@ const data = [
 		"dial_code": "+1264",
 		"code": "AI"
 	},
-	{
-		"name": "Antarctica",
-		"dial_code": "+672",
-		"code": "AQ"
-	},
+	// {
+	// 	"name": "Antarctica",
+	// 	"dial_code": "+672",
+	// 	"code": "AQ"
+	// },
 	{
 		"name": "Antigua and Barbuda",
 		"dial_code": "+1268",

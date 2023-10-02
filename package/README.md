@@ -17,7 +17,12 @@ import PhoneNumberInput from '@bebeau/phone-number-input';
 3. Use the component
 ```
 <PhoneNumberInput
-  onInputChange={(value) => setPhone(value)}
+  onInputChange={(data: {
+    number: string,
+    isValid: boolean
+  }) => handlePhoneChange(data)}
+  value="PHONE INPUT VALUE GOES HERE"
+  placeholder="Phone Number"
 >
 ```
 
@@ -25,7 +30,7 @@ import PhoneNumberInput from '@bebeau/phone-number-input';
 
 Prop | Type | Description
 |---|---|---|
-onInputChange | function | onInputChange is a function that accepts the input value and passes it up to the parent component.
+onInputChange | function | onInputChange is a function that passes a data object `{number: string, isValid: boolean}` up to the parent component.
 
 ## Example ##
 ```
@@ -33,15 +38,20 @@ import react, {useState, useEffect} from 'react';
 import PhoneNumberInput from '@bebeau/phone-number-input';
 
 const Demo = () => {
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState<string>('');
   
-  useEffect(() => {
-    console.log('PHONE: ', phone);
-  }, [phone]);
+  const handlePhoneUpdate = (data: any) => {
+    setPhone(data.number);
+  }
 
   return (
     <PhoneNumberInput 
-      onInputChange={(value) => setPhone(value)}
+      onInputChange={(data: {
+        number: string,
+        isValid: boolean
+      }) => handlePhoneUpdate(data)}
+      value={phone}
+      placeholder='phone'
     />
   );
 

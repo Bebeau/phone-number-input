@@ -24,10 +24,14 @@ interface countryData {
 }
 
 const PhoneNumberInput = (props: {
-  onInputChange: (value: string) => void,
+  onInputChange: (data: {
+    number: string,
+    isValid: boolean
+  }) => void,
   value?: string,
   placeholder?: string,
 }) => {
+  const defaultRef = useRef<boolean>(false);
   const dropdownRef = useRef<any>();
 
   const [countryData, setCountryData] = useState<countryData[]>(data);
@@ -73,24 +77,11 @@ const PhoneNumberInput = (props: {
       number = event.target.value;
     }
 
-    if (isPossiblePhoneNumber(number, countryAbbr as CountryCode)) {
-      props.onInputChange(parsePhoneNumber(number, countryAbbr as CountryCode).number);
-    }
-
-    if (!isPossiblePhoneNumber(number, countryAbbr as CountryCode)) {
-      props.onInputChange(number);
-    }
-
     setPhoneNumber(number);
 	}
 
   useEffect(() => {
     setCountryAbbr(navigator.language ? navigator.language.replace("en-","").toUpperCase() : 'US');
-    if (props.value) {
-      let phone = parsePhoneNumber(props.value);
-      setCountryAbbr(phone.country ? phone.country : navigator.language ? navigator.language.replace("en-","").toUpperCase() : 'US');
-      setPhoneNumber(phone.formatNational());
-    }
     window.addEventListener('mousedown', (e) => handleClickOutside(e));
     return () => {
       window.removeEventListener('mousedown', handleClickOutside);
@@ -98,16 +89,55 @@ const PhoneNumberInput = (props: {
   }, []);
 
   useEffect(() => {
+    if (props.value && countryAbbr) {
+
+      if (
+        validatePhoneNumberLength(props.value, countryAbbr as CountryCode) === 'TOO_LONG' ||
+        validatePhoneNumberLength(props.value, countryAbbr as CountryCode) === 'TOO_SHORT'
+        ) {
+          return setPhoneNumber(parseIncompletePhoneNumber(props.value));
+      }
+      
+      try {
+        let phone = parsePhoneNumber(props.value, countryAbbr as CountryCode);
+        if (phone.country) {
+          setCountryAbbr(phone.country);
+        }
+        setPhoneNumber(phone.formatNational());
+      } catch (err) {
+        console.error(err);
+        setPhoneNumber(parseIncompletePhoneNumber(props.value));
+      }
+      
+    }
+  }, [props.value]);
+
+  useEffect(() => {
+
     if (countryAbbr) {
       let match = countryData.filter(country => country.code.includes(countryAbbr))[0];
-      if(match) {
+      
+      if (match) {
         setDialCode(match.dial_code);
       }
     }
+
     if (isPossiblePhoneNumber(phoneNumber, countryAbbr as CountryCode)) {
+      let data =  {
+        number: parsePhoneNumber(phoneNumber, countryAbbr as CountryCode).number,
+        isValid: true
+      }
+      props.onInputChange(data);
       return setIsPossibleNumber(true);
     }
+
+    let data = {
+      number: phoneNumber,
+      isValid: false
+    }
+    props.onInputChange(data);
     setIsPossibleNumber(false);
+
   }, [countryData, phoneNumber, countryAbbr]);
 
   return (
@@ -164,7 +194,7 @@ const PhoneNumberInput = (props: {
 
         <input
           type="tel"
-          value={phoneNumber}
+          value={phoneNumber ? phoneNumber : ''}
           onChange={onPhoneChange}
           placeholder={props.placeholder ? props.placeholder : 'phone number'}
         />

@@ -2,15 +2,21 @@ import react, {useState, useEffect} from 'react';
 import PhoneNumberInput from '@bebeau/phone-number-input';
 
 const Demo = () => {
-  const [phone, setPhone] = useState('');
-  
+  const [phone, setPhone] = useState<string>('');
+
+  const handlePhoneUpdate = (data) => {
+    setPhone(data.number);
+  }
+
   useEffect(() => {
-    console.log('PHONE: ', phone);
-  }, [phone]);
+    setTimeout(() => setPhone('+155555555555'), 1000);
+  }, []);
 
   return (
     <PhoneNumberInput 
-      onInputChange={(value) => setPhone(value)}
+      onInputChange={(data) => handlePhoneUpdate(data)}
+      value={phone}
+      placeholder='phone'
     />
   );
 

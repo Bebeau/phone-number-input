@@ -89,6 +89,8 @@ const PhoneNumberInput = (props: {
   }, []);
 
   useEffect(() => {
+    if (!props.value) return setPhoneNumber('');
+    
     if (props.value && countryAbbr) {
 
       if (
